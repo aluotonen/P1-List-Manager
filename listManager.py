@@ -2,6 +2,7 @@
 # HELPER FUNCTIONS AND IMPORTS
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def optionsMenu():
+
     print("")
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("")
@@ -18,30 +19,81 @@ def optionsMenu():
     print("")    
 
 
-def viewList():
-    loadList()
-    # Something
+def viewList(myList):
+    myList = loadList()
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("")
+    print("         GROCERIES")
+
+    if len(myList) > 0:
+        for idx in range (len(myList)):
+            print(f"         {idx+1}. {myList[idx]}")
+    else:
+        print("         The list is empty!")
+    print("")
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")    
 
 
-def addItems():
-    loadList()
+def addItems(listIn):
+    myList = listIn
+    addMore = True
+    while addMore:
+        viewList(myList)
+        print("Enter an item to add(or 'quit' to return)")
+        toAdd = input(" --> ")
+        if toAdd in ["done", "quit", "exit", "return"]:
+            addMore = False
+        else:
+            myList.append(toAdd)
+
+    saveList(myList)
+
+def removeItems(listIn):
+    myList = listIn
+    removeMore = True
+    while removeMore:
+        validRemove = False
+        while not validRemove:
+            viewList(myList)
+            print("Enter an item or position to remove (or 'quit' to return)")
+            toRemove = input(" --> ")
+
+            try:
+                toRemove = int(toRemove) - 1
+                if toRemove <= len(myList):
+                    validRemove = True
+                else:
+                    print ("Invalid Choice - Try Again!")
+            except ValueError:
+                if toRemove in myList:
+                    toRemove = myList.index(toRemove)
+                    validRemove = True
+                elif toRemove in ["done", "quit", "exit", "return"]:
+                    validRemove = True
+                else:
+                    print("Invalid Choice - Try Again!")
+
+        if toRemove in ["done", "quit", "exit", "return"]:
+            removeMore = False
+        else:
+            myList.pop(toRemove)
+    
+    saveList(myList)
+
+
+
+
+def editItems(listIn):
+
     # Something
     saveList()
 
-def removeItems():
-    loadList()
+
+def moveItems(listIn):
+
     # Something
     saveList()
 
-def editItems():
-    loadList()
-    # Something
-    saveList()
-
-def moveItems():
-    loadList()
-    # Something
-    saveList()
 
 def loadList():
     try:
@@ -51,12 +103,18 @@ def loadList():
                 loadedList[idx] = loadedList[idx].replace("\n", "")
     except FileNotFoundError:
         loadedList = []
+    finally:
+        return loadedList
 
-    return loadedList
 
+def saveList(listIn):
+    with open("groceries.txt", "w") as file:
+        for idx in range(len(listIn)):
+            if idx  < len(listIn) - 1:
+                file.write(f"{listIn[idx]}\n")
+            else:
+                file.write(listIn[idx])
 
-def saveList():
-    pass
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,6 +129,7 @@ def main():
 
     appOn = True
     while appOn:
+        myList = loadList()
         validOptionsChoice = False
         while not validOptionsChoice:
             optionsMenu()
@@ -99,7 +158,7 @@ def main():
         if userChoice == 6:
             appOn = False
         else:
-            options[userChoice]()
+            options[userChoice](myList)
 
 
 
