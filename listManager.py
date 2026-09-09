@@ -81,18 +81,93 @@ def removeItems(listIn):
     saveList(myList)
 
 
-
-
 def editItems(listIn):
+    myList = listIn
+    editMore = True
+    while editMore:
+        validEdit = False
+        while not validEdit:
+            viewList(myList)
+            print("Enter an item name or number to edit (or 'quit to return')")
+            toEdit = input (" --> ")
 
-    # Something
-    saveList()
+            try:
+                toEdit =  int(toEdit) - 1
+                if toEdit <= len(myList) and toEdit >= 0:
+                    validEdit = True
+                else:
+                    print("Invalid Choice - Try Again!")                    
+                print("Please enter new item.")
+            except ValueError:
+                if toEdit in myList:
+                    toEdit = myList.index(toEdit)
+                    validEdit = True  
+                elif toEdit in ["quit"]:
+                    validEdit = True                      
+                else:
+                    print("Invalid Choice - Try Again!")
+
+        if toEdit in ["done", "quit", "exit", "return"]:
+            editMore = False
+        else:
+            print("Enter New Item.")
+            newEntry = input(" --> ")
+            myList[toEdit] = newEntry
+    saveList(myList)
 
 
 def moveItems(listIn):
+    myList = listIn
+    moveMore = True
+    while moveMore:
+        validMoveFrom = False
+        while not validMoveFrom:
+            viewList(myList)
+            print("Enter an item name or number to move")
+            moveFrom = input (" --> ")
 
-    # Something
-    saveList()
+            try:
+                moveFrom =  int(moveFrom) - 1
+                if 0 <= moveFrom < len(myList):
+                    validMoveFrom = True
+                else:
+                    print("Invalid Choice - Try Again!")                    
+            except ValueError:
+                if moveFrom in myList:
+                    moveFrom = myList.index(moveFrom)
+                    validMoveFrom = True  
+                elif moveFrom in ["quit"]:
+                    validMoveFrom = True                      
+                else:
+                    print("Invalid Choice - Try Again!")
+
+        if moveFrom in ["done", "quit", "exit", "return"]:
+            moveMore = False
+        else:
+            validMoveTo = False
+            while not validMoveTo:
+                print("Enter New Position For The Item.")
+                toMove = input(" --> ")
+
+                try:
+                    toMove = int(toMove) - 1
+                    if 0 <= toMove < len(myList) and toMove != moveFrom:
+                        validMoveTo = True
+                    else:
+                        print("Invalid Choice - Try Again!")
+                except ValueError:
+                    if toMove in ["quit"]:
+                        validMoveTo = True
+                    else:
+                        print("Invalid Choice - Try Again!")
+
+            if toMove in ["quit"]:
+                moveMore = False
+            else:
+                inTransit = myList.pop(moveFrom)
+                myList.insert(toMove, inTransit)
+
+    saveList(myList)
 
 
 def loadList():
@@ -103,8 +178,8 @@ def loadList():
                 loadedList[idx] = loadedList[idx].replace("\n", "")
     except FileNotFoundError:
         loadedList = []
-    finally:
-        return loadedList
+
+    return loadedList
 
 
 def saveList(listIn):

@@ -1,2 +1,5 @@
 Apples
+Beans
 Cherries
+Donut
+Eggs
